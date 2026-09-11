@@ -1,11 +1,32 @@
-import { useState } from 'react'
+import { createBrowserRouter } from "react-router";
+import { RouterProvider } from "react-router/dom";
+import Home from "./pages/Home";
+import AboutUs from "./pages/AboutUs";
+import MainLayout from "./layouts/MainLayout";
 
-function App() {
+const router = createBrowserRouter([
+  {
+    path: "/",
+    Component: MainLayout,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      }
+    ],
+  },
+  {
+      path: "/about-us",
+      element: <AboutUs/>,
+  }
+
+]);
+
+
+function Router() {
   return (
-    <div className="text-3xl text-red-500">
-      Hello Guys
-    </div>
+    <RouterProvider router={router} />
   )
 }
 
-export default App
+export default Router;
