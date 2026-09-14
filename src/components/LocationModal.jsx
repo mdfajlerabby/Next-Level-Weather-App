@@ -1,28 +1,51 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { X } from 'lucide-react';
 import { getGeolocation } from '../services/get-geolocation';
+import { useNavigate } from 'react-router';
 
 const LocationModal = ({onClose}) => {
-    const [city,setCity] = useState();
+    const navigate = useNavigate();
+    const [city,setCity] = useState("");
+    const [error,setError] = useState("");
+
+    const goToPage = (location)=> {
+        navigate("/weather",{state: {location}})
+    }
+
+
     const handelSubmit = async (e)=>{
         e.preventDefault();
         const value = city.trim();
         // console.log(value);
+        if(!value){
+            setError("Please enter a city name")
+            return 
+        }
         
         try{
-            const result = await getGeolocation(value);
-            console.log(result);
+            const location = await getGeolocation(value);
+            // console.log(result);
+            if(!location){
+                setError("Geocoding request failed!")
+            }
+            goToPage(location);
+
         }catch(error){
-            console.log(error);
+            setError(error);
         }
     }
     const handelGeoLocation = ()=>{
+        if(!navigator){
+            setError("Geo location not found!")
+            return
+        }
         navigator.geolocation.getCurrentPosition(
             (positions)=>{
                 const {latitude,longitude} = positions.coords;
-                console.log({latitude,longitude});
+                // console.log({latitude,longitude});
+                goToPage({name: "Your Locations",lat : latitude, lon : longitude})
             },(error)=>{
-                console.log(error)
+                setError(error.message)
             },{
                 timeout: 1000
             }
@@ -50,6 +73,10 @@ const LocationModal = ({onClose}) => {
                         </div>
                         <div className='py-2'>
                                <button type='button' onClick={handelGeoLocation} className='w-full  cursor-pointer text-lg font-medium bg-blue-500 px-5 py-1 rounded-4xl hover:scale-105 transition-all delay-100 text-gray-100'>Use My Locations</button>
+                        </div>
+
+                        <div className='text-center my-1'>
+                            {error && <p className='text-red-500 text-md font-medium'>{error}</p>}
                         </div>
                     </div>
             </div>

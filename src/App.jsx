@@ -3,6 +3,7 @@ import { RouterProvider } from "react-router/dom";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import MainLayout from "./layouts/MainLayout";
+import Weather from "./pages/Weather";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,9 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },{
+        path: "/weather",
+        element : <Weather/>
       }
     ],
   },
