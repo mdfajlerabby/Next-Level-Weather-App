@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { getGeolocation } from '../services/get-geolocation';
 
 const LocationModal = ({onClose}) => {
     const [city,setCity] = useState();
-    const handelSubmit = (e)=>{
+    const handelSubmit = async (e)=>{
         e.preventDefault();
         const value = city.trim();
-        console.log(value);
+        // console.log(value);
+        
+        try{
+            const result = await getGeolocation(value);
+            console.log(result);
+        }catch(error){
+            console.log(error);
+        }
     }
     const handelGeoLocation = ()=>{
         navigator.geolocation.getCurrentPosition(
